@@ -1,7 +1,7 @@
 package com.example.shedulebirthday.model
 
 data class UserShortModel (
-    val id: Int,
+    val id: Long,
     val name: String,
     val picture: String?,
 ) {

@@ -5,18 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shedulebirthday.R
 import com.example.shedulebirthday.model.UserFullModel
 import com.example.shedulebirthday.model.UserShortModel
 import com.example.shedulebirthday.service.LoadSaveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
-    var list = ArrayList<UserFullModel>()
+    private val scope = CoroutineScope(Dispatchers.IO)
+    var listUsers = MutableLiveData<List<UserFullModel>>()
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,28 +42,34 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
 
         loadSaveUsers()
-        displayList(list)
     }
 
     private fun loadSaveUsers() {
-        list = LoadSaveData().getSaveData()
+        scope.launch {
+            LoadSaveData(listUsers).getSaveUsers()
+        }
+        listUsers.observe(viewLifecycleOwner) {
+            if(it.isNotEmpty()) {
+                displayList(it)
+            }
+        }
     }
 
-    private fun displayList(listFullUser: ArrayList<UserFullModel>) {
+    private fun displayList(listFullUser: List<UserFullModel>) {
         recyclerView.adapter = ListUserBirthdayAdapter(convertFullModelToShort(listFullUser), this)
     }
 
-    override fun onCellClickListener(idItem: Int) {
+    override fun onCellClickListener(idItem: Long) {
         //Toast.makeText(this, "Click", Toast.LENGTH_SHORT)
         println("Click!")
     }
 
-    override fun onCellLongClickListener(idItem: Int) {
+    override fun onCellLongClickListener(idItem: Long) {
         TODO("Not yet implemented")
     }
 
     companion object {
-        fun convertFullModelToShort(full: ArrayList<UserFullModel>): ArrayList<UserShortModel> {
+        fun convertFullModelToShort(full: List<UserFullModel>): ArrayList<UserShortModel> {
             val short = ArrayList<UserShortModel>()
             for (item in full) {
                 short.add(UserShortModel(item.id, item.name, item.picture))
