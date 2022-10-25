@@ -10,7 +10,7 @@ import com.example.schedulebirthday.database.room.repository.RoomUserEventReposi
 
 @Database(
     entities = [UserEventEntity::class],
-    version = 1
+    version = 4
 )
 abstract class BirthdayDatabase: RoomDatabase() {
     abstract fun userDao(): UserEventDao

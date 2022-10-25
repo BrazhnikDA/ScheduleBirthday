@@ -3,6 +3,7 @@ package com.example.schedulebirthday.database.room.repository
 import android.content.Context
 import com.example.schedulebirthday.database.repository.UserEventRepository
 import com.example.schedulebirthday.database.room.creator.BirthdayDatabase
+import com.example.schedulebirthday.database.room.entity.UserEventEntity
 import com.example.schedulebirthday.model.UserFullModel
 
 class RoomUserEventRepository {
@@ -14,8 +15,8 @@ class RoomUserEventRepository {
             return BirthdayDatabase.getDatabaseBirthday(context)
         }
 
-        override suspend fun saveUserProfile(user: UserFullModel) {
-            profileDatabase!!.userDao().saveUserProfile(UserFullModel.convertListModelToEntity(user))
+        override suspend fun saveUserProfile(user: UserEventEntity) {
+            profileDatabase!!.userDao().saveUserProfile(user)
         }
 
         override suspend fun getUserProfile(): List<UserFullModel> {

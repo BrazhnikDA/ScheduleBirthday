@@ -6,10 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_entity")
 class UserEventEntity(
-    @PrimaryKey
-    @ColumnInfo(name = "id")
-    var id: Long,
-
     @ColumnInfo(name = "name")
     val name: String,
 
@@ -23,8 +19,12 @@ class UserEventEntity(
     val months: String,
 
     @ColumnInfo(name = "year")
-    val year: String? = null,
+    val year: String,
 
     @ColumnInfo(name = "age")
-    val age: String? = null
-)
+    val age: String
+) {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var id: Long? = null
+}

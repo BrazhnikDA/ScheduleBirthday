@@ -49,7 +49,7 @@ class ListUserBirthdayAdapter(
         //holder.picture.setImageDrawable(getDrawable(this, R.drawable.unnamed))
 
         holder.itemView.setOnClickListener {
-            cellClickListener.onCellClickListener(listUser[position].id)
+            cellClickListener.onCellClickListener(listUser[position].id.toLong())
         }
         /*holder.itemView.setOnLongClickListener {
             cellClickListener.onCellLongClickListener(listUser[position].id)

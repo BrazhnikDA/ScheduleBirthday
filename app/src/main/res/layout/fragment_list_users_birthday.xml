@@ -89,15 +89,15 @@
 
     </ScrollView>
 
-    <!--SHOW MENU-->
+    <!-- OPEN SHOW MENU-->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/menuBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:alpha="0.8"
         android:background="@color/gray_top_menu_background"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imageViewButtonHamburgerMenuClose"
@@ -114,9 +114,9 @@
         android:id="@+id/menuButtonsWrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:layout_centerInParent="true"
-        android:alpha="1">
+        android:alpha="1"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/textViewButtonSettings"
@@ -155,19 +155,17 @@
             android:textSize="40sp" />
 
     </RelativeLayout>
-
     <!--CLOSE SHOW MENU-->
 
-    <!--SHOW PROFILE-->
-
+    <!-- OPEN SHOW PROFILE-->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/profileBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:alpha="0.9"
         android:background="@color/gray_background_menu"
-        android:orientation="vertical"/>
+        android:orientation="vertical"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/showProfileWrapper"
@@ -185,32 +183,32 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="100dp"
                 android:elevation="100dp"
                 app:cardCornerRadius="150dp">
 
-            <com.makeramen.roundedimageview.RoundedImageView
-                android:id="@+id/imageViewShowProfile"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:background="@color/white"
-                android:scaleType="centerCrop"
-                android:src="@drawable/unnamed"
-                app:riv_corner_radius="100dp" />
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/imageViewShowProfile"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:background="@color/white"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/unnamed"
+                    app:riv_corner_radius="100dp" />
 
-            <TextView
-                android:id="@+id/textViewUser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Дмитрий"
-                android:textColor="@color/black"
-                android:textSize="32sp"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:background="@color/white"/>
+                <TextView
+                    android:id="@+id/textViewUser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:text="Дмитрий"
+                    android:textColor="@color/black"
+                    android:textSize="32sp" />
 
             </androidx.cardview.widget.CardView>
 
@@ -229,7 +227,88 @@
             android:textSize="44sp" />
 
     </RelativeLayout>
-
     <!--CLOSE SHOW PROFILE-->
+
+    <!-- OPEN ADD NEW USER-->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/newBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.98"
+        android:background="@color/gray_background_menu"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/showAddNewWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/wrapperAddNewImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="100dp"
+                android:elevation="100dp"
+                app:cardCornerRadius="150dp">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    android:id="@+id/imageViewNewImage"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:background="@color/white"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/unnamed"
+                    app:riv_corner_radius="100dp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/editTextName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:hint="Имя"
+                android:inputType="text"
+                android:maxLength="20"
+                android:textSize="42sp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/editTextDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:gravity="center"
+                android:hint="07.11.2001"
+                android:maxLength="10"
+                android:inputType="date"
+                android:textColorHint="@color/gray_text_hint"
+                android:textSize="42sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/buttonAddNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Добавить"
+                android:background="@android:color/holo_green_light"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+    <!-- CLOSE ADD NEW USER-->
 
 </RelativeLayout>

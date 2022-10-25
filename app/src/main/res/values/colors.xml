@@ -10,4 +10,5 @@
 
     <color name="gray_top_menu_background">#FBFBFB</color>
     <color name="gray_background_menu">#DBDBDB</color>
+    <color name="gray_text_hint">#9F9F9F</color>
 </resources>
