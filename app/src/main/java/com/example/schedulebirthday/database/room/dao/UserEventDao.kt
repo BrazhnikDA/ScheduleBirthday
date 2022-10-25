@@ -9,7 +9,7 @@ import com.example.schedulebirthday.database.room.entity.UserEventEntity
 @Dao
 interface UserEventDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun saveUserProfile(user: UserEventEntity)
 
     @Query("SELECT * FROM user_entity")

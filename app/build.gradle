@@ -8,11 +8,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    namespace 'com.example.shedulebirthday'
+    namespace 'com.example.schedulebirthday'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.shedulebirthday"
+        applicationId "com.example.schedulebirthday"
         minSdk 26
         targetSdk 33
         versionCode 1
