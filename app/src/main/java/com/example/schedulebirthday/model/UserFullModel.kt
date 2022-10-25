@@ -1,6 +1,6 @@
-package com.example.shedulebirthday.model
+package com.example.schedulebirthday.model
 
-import com.example.shedulebirthday.database.room.entity.UserEventEntity
+import com.example.schedulebirthday.database.room.entity.UserEventEntity
 
 data class UserFullModel(
     val id: Long,

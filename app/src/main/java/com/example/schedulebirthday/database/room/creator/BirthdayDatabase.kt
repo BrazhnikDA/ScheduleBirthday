@@ -1,12 +1,12 @@
-package com.example.shedulebirthday.database.room.creator
+package com.example.schedulebirthday.database.room.creator
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.shedulebirthday.database.room.dao.UserEventDao
-import com.example.shedulebirthday.database.room.entity.UserEventEntity
-import com.example.shedulebirthday.database.room.repository.RoomUserEventRepository
+import com.example.schedulebirthday.database.room.dao.UserEventDao
+import com.example.schedulebirthday.database.room.entity.UserEventEntity
+import com.example.schedulebirthday.database.room.repository.RoomUserEventRepository
 
 @Database(
     entities = [UserEventEntity::class],

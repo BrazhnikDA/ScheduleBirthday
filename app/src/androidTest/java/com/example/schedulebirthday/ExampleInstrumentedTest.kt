@@ -1,4 +1,4 @@
-package com.example.shedulebirthday
+package com.example.schedulebirthday
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

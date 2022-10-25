@@ -1,4 +1,4 @@
-package com.example.shedulebirthday.model
+package com.example.schedulebirthday.model
 
 data class UserShortModel (
     val id: Long,

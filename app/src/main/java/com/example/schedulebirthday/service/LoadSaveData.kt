@@ -1,8 +1,8 @@
-package com.example.shedulebirthday.service
+package com.example.schedulebirthday.service
 
 import androidx.lifecycle.MutableLiveData
-import com.example.shedulebirthday.database.room.repository.RoomUserEventRepository
-import com.example.shedulebirthday.model.UserFullModel
+import com.example.schedulebirthday.database.room.repository.RoomUserEventRepository
+import com.example.schedulebirthday.model.UserFullModel
 
 class LoadSaveData(private val users: MutableLiveData<List<UserFullModel>>) {
 

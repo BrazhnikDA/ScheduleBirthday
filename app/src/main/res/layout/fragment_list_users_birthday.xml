@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".view.ListUsersBirthdayFragment">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/constraintLayoutTopMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/gray_top_menu_background"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -39,6 +41,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/textViewButtonAddNewBirthday"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:gravity="center"
+            android:text="+"
+            android:textColor="@color/black"
+            android:textSize="42sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textViewButtonSortWithAlphabeticallyForHomeScreen"
+            app:layout_constraintStart_toEndOf="@+id/textViewButtonOpenHomeScreenMenu"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
             android:id="@+id/textViewButtonSortWithAlphabeticallyForHomeScreen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,18 +69,19 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
+        android:id="@+id/scrollViewListUsers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/constraintLayoutTopMenu"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="15dp"
-            android:paddingStart="25dp"
+            android:padding="10dp"
             android:scrollbars="horizontal"
             tools:listitem="@layout/item_user_birthday">
 
@@ -72,4 +89,147 @@
 
     </ScrollView>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <!--SHOW MENU-->
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/menuBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:alpha="0.8"
+        android:background="@color/gray_top_menu_background"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageViewButtonHamburgerMenuClose"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="15dp"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <RelativeLayout
+        android:id="@+id/menuButtonsWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:alpha="1">
+
+        <TextView
+            android:id="@+id/textViewButtonSettings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/textViewButtonReviews"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="10dp"
+            android:background="@color/gray_top_menu_background"
+            android:gravity="center"
+            android:text="Настройки"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/textViewButtonReviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@color/gray_top_menu_background"
+            android:gravity="center"
+            android:text="Отзывы"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/textViewButtonCallAFriend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewButtonReviews"
+            android:layout_marginTop="10dp"
+            android:background="@color/gray_top_menu_background"
+            android:gravity="center"
+            android:text="Позвать друга"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+    </RelativeLayout>
+
+    <!--CLOSE SHOW MENU-->
+
+    <!--SHOW PROFILE-->
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/profileBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:alpha="0.9"
+        android:background="@color/gray_background_menu"
+        android:orientation="vertical"/>
+
+    <RelativeLayout
+        android:id="@+id/showProfileWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/wrapperImageText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
+                android:layout_gravity="center"
+                android:elevation="100dp"
+                app:cardCornerRadius="150dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imageViewShowProfile"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:background="@color/white"
+                android:scaleType="centerCrop"
+                android:src="@drawable/unnamed"
+                app:riv_corner_radius="100dp" />
+
+            <TextView
+                android:id="@+id/textViewUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Дмитрий"
+                android:textColor="@color/black"
+                android:textSize="32sp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@color/white"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textViewDateOfBorn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wrapperImageText"
+            android:layout_marginTop="75dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="21.11.1981 45"
+            android:textColor="@color/black"
+            android:textSize="44sp" />
+
+    </RelativeLayout>
+
+    <!--CLOSE SHOW PROFILE-->
+
+</RelativeLayout>
