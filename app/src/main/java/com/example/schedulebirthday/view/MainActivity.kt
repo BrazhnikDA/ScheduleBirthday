@@ -1,10 +1,10 @@
-package com.example.shedulebirthday.view
+package com.example.schedulebirthday.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import com.example.shedulebirthday.R
-import com.example.shedulebirthday.database.room.creator.BirthdayDatabase
+import com.example.schedulebirthday.R
+import com.example.schedulebirthday.database.room.creator.BirthdayDatabase
 
 
 class MainActivity : AppCompatActivity() {

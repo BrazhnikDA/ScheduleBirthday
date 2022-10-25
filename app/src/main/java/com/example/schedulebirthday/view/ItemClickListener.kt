@@ -1,4 +1,4 @@
-package com.example.shedulebirthday.view
+package com.example.schedulebirthday.view
 
 interface ItemClickListener {
     fun onCellClickListener(idItem: Long)

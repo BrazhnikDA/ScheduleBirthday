@@ -1,4 +1,4 @@
-package com.example.shedulebirthday
+package com.example.schedulebirthday
 
 import org.junit.Test
 

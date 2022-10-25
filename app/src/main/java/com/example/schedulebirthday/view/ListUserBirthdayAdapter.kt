@@ -1,18 +1,21 @@
-package com.example.shedulebirthday.view
+package com.example.schedulebirthday.view
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
-import com.example.shedulebirthday.R
-import com.example.shedulebirthday.model.UserFullModel
-import com.example.shedulebirthday.model.UserShortModel
+import com.example.schedulebirthday.R
+import com.example.schedulebirthday.model.UserFullModel
 import com.makeramen.roundedimageview.RoundedImageView
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+import java.util.*
 
 class ListUserBirthdayAdapter(
-    private val listUser: List<UserShortModel>,
+    private val listUser: List<UserFullModel>,
     private val cellClickListener: ItemClickListener
 ) : RecyclerView.Adapter<ListUserBirthdayAdapter.RatingViewHolder>() {
 
@@ -29,7 +32,20 @@ class ListUserBirthdayAdapter(
     }
 
     override fun onBindViewHolder(holder: RatingViewHolder, position: Int) {
-        holder.name.text = listUser[position].name
+        val sdf = SimpleDateFormat("yyyy")
+        val currentDate = sdf.format(Date())
+        val dateString = listUser[position].day + listUser[position].months + currentDate
+        var from = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("ddMMyyyy"))
+        val today = LocalDate.now()
+        var period = ChronoUnit.DAYS.between(today, from)
+
+        if(period < 0) {
+            from = from.plusYears(1)
+            period = ChronoUnit.DAYS.between(today, from)
+        }
+
+
+        holder.name.text = listUser[position].name + "\n" + period + " дней"
         //holder.picture.setImageDrawable(getDrawable(this, R.drawable.unnamed))
 
         holder.itemView.setOnClickListener {

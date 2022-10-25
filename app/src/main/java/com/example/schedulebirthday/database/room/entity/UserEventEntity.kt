@@ -1,10 +1,8 @@
-package com.example.shedulebirthday.database.room.entity
+package com.example.schedulebirthday.database.room.entity
 
-import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.sql.Blob
 
 @Entity(tableName = "user_entity")
 class UserEventEntity(

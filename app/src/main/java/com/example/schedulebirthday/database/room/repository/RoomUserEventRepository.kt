@@ -1,9 +1,9 @@
-package com.example.shedulebirthday.database.room.repository
+package com.example.schedulebirthday.database.room.repository
 
 import android.content.Context
-import com.example.shedulebirthday.database.repository.UserEventRepository
-import com.example.shedulebirthday.database.room.creator.BirthdayDatabase
-import com.example.shedulebirthday.model.UserFullModel
+import com.example.schedulebirthday.database.repository.UserEventRepository
+import com.example.schedulebirthday.database.room.creator.BirthdayDatabase
+import com.example.schedulebirthday.model.UserFullModel
 
 class RoomUserEventRepository {
     companion object: UserEventRepository {

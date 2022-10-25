@@ -1,6 +1,6 @@
-package com.example.shedulebirthday.database.repository
+package com.example.schedulebirthday.database.repository
 
-import com.example.shedulebirthday.model.UserFullModel
+import com.example.schedulebirthday.model.UserFullModel
 
 interface UserEventRepository {
     suspend fun saveUserProfile(user: UserFullModel)
