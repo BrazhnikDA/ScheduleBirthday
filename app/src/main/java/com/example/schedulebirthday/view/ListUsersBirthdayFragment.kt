@@ -6,7 +6,6 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,6 +15,7 @@ import com.example.schedulebirthday.database.room.entity.UserEventEntity
 import com.example.schedulebirthday.databinding.FragmentListUsersBirthdayBinding
 import com.example.schedulebirthday.model.UserFullModel
 import com.example.schedulebirthday.service.LoadSaveData
+import com.example.schedulebirthday.utilities.displayToast
 import com.example.schedulebirthday.view.settings.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_list_users_birthday.*
 import kotlinx.coroutines.CoroutineScope
@@ -76,9 +76,18 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         binding.textViewUser.text = listUsers.value?.get(reallyID)?.name ?: "Имя не найдено"
 
 
-        binding.textViewDateOfBorn.text =
-            listUsers.value!![reallyID].day + "/" + listUsers.value!![reallyID].months + "/" + listUsers.value!![reallyID].year + " " + listUsers.value!![reallyID].age + " лет"
-
+        binding.textViewDateOfBorn.text = String.format(
+            getString(R.string.show_detail_profile_age),
+            listUsers.value!![reallyID].day,
+            listUsers.value!![reallyID].months,
+            listUsers.value!![reallyID].year,
+            listUsers.value!![reallyID].age,
+            calculateYear(
+                listUsers.value!![reallyID].day,
+                listUsers.value!![reallyID].months,
+                listUsers.value!![reallyID].year
+            ).toString()
+        )
 
         binding.showProfileWrapper.setOnClickListener {
             binding.profileBackground.visibility = View.GONE
@@ -95,7 +104,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             LocalDate.parse(text, formatter)
             true
         } catch (ex: DateTimeParseException) {
-            Toast.makeText(context, "Дата неверна!", Toast.LENGTH_SHORT).show()
+            context?.displayToast("Дата неверна!")
             false
         }
     }
@@ -114,13 +123,23 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
             if (str.length == 1) {
                 if (str.toInt() > 4) {
-                    binding.editTextDate.setText("0$str.")
+                    binding.editTextDate.setText(
+                        String.format(
+                            getString(R.string.correction_input_date_null_start_point_end),
+                            str
+                        )
+                    )
                     binding.editTextDate.setSelection(binding.editTextDate.length())
                 }
             }
 
             if (str.length == 2 || str.length == 5) {
-                binding.editTextDate.setText("$str.")
+                binding.editTextDate.setText(
+                    String.format(
+                        getString(R.string.correction_input_date_point_end),
+                        str
+                    )
+                )
                 binding.editTextDate.setSelection(binding.editTextDate.length())
             }
 
@@ -135,12 +154,12 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
     private fun handlerClick() {
         binding.textViewButtonAddNewBirthday.setOnClickListener {
             binding.newBackground.visibility = View.VISIBLE
-            binding.showAddNewWrapper.visibility = View.VISIBLE
+            binding.wrapperAddNewImage.visibility = View.VISIBLE
         }
         binding.buttonAddNew.setOnClickListener {
             // Проверка полей
             if (binding.editTextName.text.toString() == "" || binding.editTextDate.text.toString() == "") {
-                Toast.makeText(context, "Заполните поля", Toast.LENGTH_SHORT).show()
+                context?.displayToast("Заполните поля")
             } else {
                 val name = binding.editTextName.text.toString()
                 val date = binding.editTextDate.text.toString()
@@ -154,7 +173,6 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                         DateTimeFormatter.ofPattern("ddMMyyyy")
                     )
                 ) {
-
                     val yearsBetween = calculateYear(day, month, year).toString()
                     val user = UserEventEntity(name, "null", day, month, year, yearsBetween)
                     scope.launch {
@@ -162,18 +180,18 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                     }
 
                     binding.newBackground.visibility = View.GONE
-                    binding.showAddNewWrapper.visibility = View.GONE
-                    Toast.makeText(context, "Успех!", Toast.LENGTH_SHORT).show()
+                    binding.wrapperAddNewImage.visibility = View.GONE
+                    context?.displayToast("Успех!")
                     // Update RecyclerView
                     loadSaveUsers()
                 } else {
-                    Toast.makeText(context, "Дата указана неверно!", Toast.LENGTH_SHORT).show()
+                    context?.displayToast("Дата указана неверно!")
                 }
             }
         }
         binding.newBackground.setOnClickListener {
             binding.newBackground.visibility = View.GONE
-            binding.showAddNewWrapper.visibility = View.GONE
+            binding.wrapperAddNewImage.visibility = View.GONE
         }
         binding.textViewButtonOpenHomeScreenMenu.setOnClickListener {
             val intent = Intent(context, MainActivity::class.java)
