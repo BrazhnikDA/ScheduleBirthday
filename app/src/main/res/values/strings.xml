@@ -1,4 +1,22 @@
 <resources>
     <string name="app_name">ScheduleBirthday</string>
+    <string name="go_to_home_screen_button">НВ</string>
+    <string name="contentDescription_menu">MENU</string>
+    <string name="sort_alphabetically_a">A</string>
+    <string name="settings">Настройки</string>
+    <string name="feedback">Отзывы</string>
+    <string name="call_friend">Позвать друга</string>
+    <string name="example_name">Дмитрий</string>
+    <string name="example_21_11_1981_45">21.11.1981 45</string>
+    <string name="add">Добавить</string>
+    <string name="example_07_11_2001">07.11.2001</string>
+    <string name="hint_name">Имя</string>
+    <string name="name_days">Бражник Дмитрий\n60 дней</string>
+
+    <string name="show_detail_profile_age">%1$s.%2$s.%3$s %4$s лет\nДо праздника: %5$s</string>
+    <string name="show_detail_profile_year">%1$s.%2$s.%3$s %4$s года\nДо праздника: %5$s</string>
+
+    <string name="correction_input_date_null_start_point_end">0%1$s.</string>
+    <string name="correction_input_date_point_end">%1$s.</string>
 
 </resources>
