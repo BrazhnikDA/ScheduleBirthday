@@ -14,17 +14,14 @@ import com.example.schedulebirthday.R
 import com.example.schedulebirthday.database.room.entity.UserEventEntity
 import com.example.schedulebirthday.databinding.FragmentListUsersBirthdayBinding
 import com.example.schedulebirthday.model.UserFullModel
-import com.example.schedulebirthday.service.LoadSaveData
+import com.example.schedulebirthday.repository.*
 import com.example.schedulebirthday.utilities.displayToast
 import com.example.schedulebirthday.view.settings.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_list_users_birthday.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.Period
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 
 class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
@@ -73,7 +70,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         val reallyID = idItem.toInt() - 1
         binding.profileBackground.visibility = View.VISIBLE
         binding.showProfileWrapper.visibility = View.VISIBLE
-        binding.textViewUser.text = listUsers.value?.get(reallyID)?.name ?: "Имя не найдено"
+        binding.textViewUser.text = listUsers.value?.get(reallyID)?.name
 
 
         binding.textViewDateOfBorn.text = String.format(
@@ -99,30 +96,12 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         TODO("Not yet implemented")
     }
 
-    private fun parseLocalDateOrNull(text: String, formatter: DateTimeFormatter): Boolean {
-        return try {
-            LocalDate.parse(text, formatter)
-            true
-        } catch (ex: DateTimeParseException) {
-            context?.displayToast("Дата неверна!")
-            false
-        }
-    }
-
-    private fun calculateYear(day: String, months: String, year: String): Int {
-        val dateString = day + months + year
-        val from = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("ddMMyyyy"))
-        val today = LocalDate.now()
-        return Period.between(from, today).years
-    }
-
-
     private fun handlerInput() {
         binding.editTextDate.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
             val str = editTextDate.text.toString()
 
             if (str.length == 1) {
-                if (str.toInt() > 4) {
+                if (str.toInt() >= 4) {
                     binding.editTextDate.setText(
                         String.format(
                             getString(R.string.correction_input_date_null_start_point_end),
@@ -132,8 +111,22 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                     binding.editTextDate.setSelection(binding.editTextDate.length())
                 }
             }
+            if(keyCode == KeyEvent.KEYCODE_DEL) {
+                if(str.length == 6) {
+                    binding.editTextDate.setText(str.removeRange(5, 6))
+                    binding.editTextDate.setSelection(binding.editTextDate.length())
+                }
+                if(str.length == 3) {
+                    binding.editTextDate.setText(str.removeRange(2, 3))
+                    binding.editTextDate.setSelection(binding.editTextDate.length())
+                }
+                if(str.length == 2 or 5) {
+                    binding.editTextDate.setText(str.removeRange(str.length, str.length))
+                    binding.editTextDate.setSelection(binding.editTextDate.length())
+                }
+            }
 
-            if (str.length == 2 || str.length == 5) {
+            if (str.length == 2 || str.length == 5 && keyCode != KeyEvent.KEYCODE_DEL) {
                 binding.editTextDate.setText(
                     String.format(
                         getString(R.string.correction_input_date_point_end),
@@ -150,31 +143,65 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         })
     }
 
+    //region Handler Click
+
     // Handler click on button to screen (menu, GoHome, Add, Sort)
     private fun handlerClick() {
+        clickHamburgerMenu()
+        clickAddNewBirthday()
+        clickOpenReviews()
+        clickOpenSettings()
+        clickGoToHomeScreen()
+        clickOpenCallAFriend()
+        clickSortListUsers()
+    }
+
+    private fun clickHamburgerMenu() {
+        // Click Open Menu
+        binding.imageViewButtonHamburgerMenu.setOnClickListener {
+            binding.menuBackground.visibility = View.VISIBLE
+            binding.menuButtonsWrapper.visibility = View.VISIBLE
+        }
+        // Click Close Menu
+        binding.imageViewButtonHamburgerMenuClose.setOnClickListener {
+            binding.menuBackground.visibility = View.GONE
+            binding.menuButtonsWrapper.visibility = View.GONE
+        }
+        // When you click on the background under the menu, do nothing
+        binding.menuBackground.setOnClickListener {
+            // Nothing
+        }
+    }
+
+    private fun clickGoToHomeScreen() {
+        //TODO FIX MEMORY LEAK!!!
+        binding.textViewButtonOpenHomeScreenMenu.setOnClickListener {
+            val intent = Intent(context, MainActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun clickAddNewBirthday() {
+        // Show menu for add new user
         binding.textViewButtonAddNewBirthday.setOnClickListener {
             binding.newBackground.visibility = View.VISIBLE
             binding.wrapperAddNewImage.visibility = View.VISIBLE
         }
+        // Handler click add new User
         binding.buttonAddNew.setOnClickListener {
-            // Проверка полей
-            if (binding.editTextName.text.toString() == "" || binding.editTextDate.text.toString() == "") {
-                context?.displayToast("Заполните поля")
-            } else {
-                val name = binding.editTextName.text.toString()
-                val date = binding.editTextDate.text.toString()
-                val parseDate = date.split('.')
-                val day = parseDate[0]
-                val month = parseDate[1]
-                val year = parseDate[2]
+            val etName = binding.editTextName.text.toString()
+            val etDate = binding.editTextDate.text.toString()
+            // Check field
+            if (etName.isEmpty() || etDate.isEmpty()
+            ) context?.displayToast("Заполните поля")
+            else {
+                val date = convertStringEditTextToStringDate(etDate, '.')
+                val arrayDate = convertStringEditTextToArrayStringDate(etDate, '.')
 
-                if (parseLocalDateOrNull(
-                        day + month + year,
-                        DateTimeFormatter.ofPattern("ddMMyyyy")
-                    )
-                ) {
-                    val yearsBetween = calculateYear(day, month, year).toString()
-                    val user = UserEventEntity(name, "null", day, month, year, yearsBetween)
+                if (parseLocalDateOrNull(date, DateTimeFormatter.ofPattern("ddMMyyyy"))) {
+                    val yearsBetween = calculateYear(date).toString()
+                    val user = UserEventEntity(etName, "null", arrayDate[0], arrayDate[1], arrayDate[2], yearsBetween)
+
                     scope.launch {
                         LoadSaveData(listUsers).setSaveUser(user)
                     }
@@ -182,6 +209,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                     binding.newBackground.visibility = View.GONE
                     binding.wrapperAddNewImage.visibility = View.GONE
                     context?.displayToast("Успех!")
+
                     // Update RecyclerView
                     loadSaveUsers()
                 } else {
@@ -189,27 +217,16 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                 }
             }
         }
-        binding.newBackground.setOnClickListener {
-            binding.newBackground.visibility = View.GONE
-            binding.wrapperAddNewImage.visibility = View.GONE
-        }
-        binding.textViewButtonOpenHomeScreenMenu.setOnClickListener {
-            val intent = Intent(context, MainActivity::class.java)
-            startActivity(intent)
-        }
+    }
+
+    private fun clickSortListUsers() {
+        // Sort user on Alphabetically
         binding.textViewButtonSortWithAlphabeticallyForHomeScreen.setOnClickListener {
             displayList(listUsers.value!!.sortedBy { it.name })
         }
+    }
 
-        binding.imageViewButtonHamburgerMenuClose.setOnClickListener {
-            binding.menuBackground.visibility = View.GONE
-            binding.menuButtonsWrapper.visibility = View.GONE
-        }
-        binding.imageViewButtonHamburgerMenu.setOnClickListener {
-            binding.menuBackground.visibility = View.VISIBLE
-            binding.menuButtonsWrapper.visibility = View.VISIBLE
-        }
-
+    private fun clickOpenSettings() {
         binding.textViewButtonSettings.setOnClickListener {
             // Скрыть меню перед переходом
             binding.menuBackground.visibility = View.GONE
@@ -217,25 +234,19 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             val intent = Intent(context, SettingsActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun clickOpenReviews() {
         binding.textViewButtonReviews.setOnClickListener {
             //TODO Открыть другую активность
         }
+    }
+
+    private fun clickOpenCallAFriend() {
         binding.textViewButtonCallAFriend.setOnClickListener {
             //TODO Открыть другую активность
         }
-        binding.menuBackground.setOnClickListener {
-            // Nothing
-        }
     }
 
-    companion object {
-        //TODO Переместить в класс юзерфуллмодель!!!
-        /*fun convertFullModelToShort(full: List<UserFullModel>): ArrayList<UserShortModel> {
-            val short = ArrayList<UserShortModel>()
-            for (item in full) {
-                short.add(UserShortModel(item.name, item.picture))
-            }
-            return short
-        }*/
-    }
+    //endregion
 }
