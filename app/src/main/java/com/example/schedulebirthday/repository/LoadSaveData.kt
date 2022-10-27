@@ -1,4 +1,4 @@
-package com.example.schedulebirthday.service
+package com.example.schedulebirthday.repository
 
 import androidx.lifecycle.MutableLiveData
 import com.example.schedulebirthday.database.room.entity.UserEventEntity

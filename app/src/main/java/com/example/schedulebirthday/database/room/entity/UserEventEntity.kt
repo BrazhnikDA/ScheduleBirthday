@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_entity")
-class UserEventEntity(
+data class UserEventEntity(
     @ColumnInfo(name = "name")
     val name: String,
 
