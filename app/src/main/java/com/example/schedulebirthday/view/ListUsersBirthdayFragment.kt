@@ -1,11 +1,15 @@
 package com.example.schedulebirthday.view
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,6 +29,9 @@ import java.time.format.DateTimeFormatter
 
 
 class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
+
+    // Path to image
+    private lateinit var picturePath: String
 
     private var _binding: FragmentListUsersBirthdayBinding? = null
     private val binding get() = _binding!!
@@ -200,7 +207,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
                 if (parseLocalDateOrNull(date, DateTimeFormatter.ofPattern("ddMMyyyy"))) {
                     val yearsBetween = calculateYear(date).toString()
-                    val user = UserEventEntity(etName, "null", arrayDate[0], arrayDate[1], arrayDate[2], yearsBetween)
+                    val user = UserEventEntity(etName, picturePath, arrayDate[0], arrayDate[1], arrayDate[2], yearsBetween)
 
                     scope.launch {
                         LoadSaveData(listUsers).setSaveUser(user)
@@ -217,6 +224,42 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                 }
             }
         }
+        binding.imageViewNewImage.setOnClickListener {
+            openGalleryForImage()
+        }
+    }
+
+    private fun openGalleryForImage() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        // TODO FIX deprecated
+        startActivityForResult(intent, REQUEST_CODE)
+    }
+
+    // TODO FIX deprecated
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+            if (data != null) {
+                binding.imageViewNewImage.setImageURI(data.data) // handle chosen image
+                picturePath = getRealPathFromURI(data.data!!, requireContext() as Activity)
+            } else {
+                binding.imageViewNewImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.unnamed))
+            }
+        }
+    }
+
+    private fun getRealPathFromURI(contentURI: Uri, context: Activity): String {
+        val projection = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = context.managedQuery(
+            contentURI, projection, null,
+            null, null
+        ) ?: return null.toString()
+        val columnIndex = cursor
+            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        return if (cursor.moveToFirst()) {
+            cursor.getString(columnIndex)
+        } else null.toString()
     }
 
     private fun clickSortListUsers() {
@@ -249,4 +292,8 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
     }
 
     //endregion
+
+    companion object {
+        private const val REQUEST_CODE = 100
+    }
 }

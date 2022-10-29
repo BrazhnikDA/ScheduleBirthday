@@ -1,5 +1,8 @@
 package com.example.schedulebirthday.view
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.schedulebirthday.R
 import com.example.schedulebirthday.model.UserFullModel
 import com.makeramen.roundedimageview.RoundedImageView
+import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -46,7 +50,12 @@ class ListUserBirthdayAdapter(
 
 
         holder.name.text = listUser[position].name + "\n" + period + " дней"
-        //holder.picture.setImageDrawable(getDrawable(this, R.drawable.unnamed))
+
+        val imgFile = File(listUser[position].picture)
+        val bitmap: Bitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+
+        holder.picture.setImageURI(Uri.parse(listUser[position].picture))
+        holder.picture.setImageBitmap(bitmap)
 
         holder.itemView.setOnClickListener {
             cellClickListener.onCellClickListener(listUser[position].id.toLong())
