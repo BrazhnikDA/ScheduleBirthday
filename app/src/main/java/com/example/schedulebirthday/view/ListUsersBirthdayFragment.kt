@@ -2,14 +2,11 @@ package com.example.schedulebirthday.view
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.schedulebirthday.R
 import com.example.schedulebirthday.database.room.entity.UserEventEntity
 import com.example.schedulebirthday.databinding.FragmentListUsersBirthdayBinding
-import com.example.schedulebirthday.model.UserFullModel
+import com.example.schedulebirthday.model.UserModel
 import com.example.schedulebirthday.repository.*
 import com.example.schedulebirthday.utilities.displayToast
 import com.example.schedulebirthday.view.settings.SettingsActivity
@@ -30,14 +27,17 @@ import java.time.format.DateTimeFormatter
 
 class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
+    //Status sort
+    private var statusSort: StatusSort = StatusSort.DATE_UP
+
     // Path to image
-    private lateinit var picturePath: String
+    private var picturePath = "null"
 
     private var _binding: FragmentListUsersBirthdayBinding? = null
     private val binding get() = _binding!!
 
     private val scope = CoroutineScope(Dispatchers.IO)
-    private var listUsers = MutableLiveData<List<UserFullModel>>()
+    private var listUsers = MutableLiveData<List<UserModel>>()
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
@@ -69,7 +69,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         }
     }
 
-    private fun displayList(listFullUser: List<UserFullModel>) {
+    private fun displayList(listFullUser: List<UserModel>) {
         recyclerView.adapter = ListUserBirthdayAdapter((listFullUser), this)
     }
 
@@ -118,16 +118,16 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                     binding.editTextDate.setSelection(binding.editTextDate.length())
                 }
             }
-            if(keyCode == KeyEvent.KEYCODE_DEL) {
-                if(str.length == 6) {
+            if (keyCode == KeyEvent.KEYCODE_DEL) {
+                if (str.length == 6) {
                     binding.editTextDate.setText(str.removeRange(5, 6))
                     binding.editTextDate.setSelection(binding.editTextDate.length())
                 }
-                if(str.length == 3) {
+                if (str.length == 3) {
                     binding.editTextDate.setText(str.removeRange(2, 3))
                     binding.editTextDate.setSelection(binding.editTextDate.length())
                 }
-                if(str.length == 2 or 5) {
+                if (str.length == 2 or 5) {
                     binding.editTextDate.setText(str.removeRange(str.length, str.length))
                     binding.editTextDate.setSelection(binding.editTextDate.length())
                 }
@@ -207,7 +207,14 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
                 if (parseLocalDateOrNull(date, DateTimeFormatter.ofPattern("ddMMyyyy"))) {
                     val yearsBetween = calculateYear(date).toString()
-                    val user = UserEventEntity(etName, picturePath, arrayDate[0], arrayDate[1], arrayDate[2], yearsBetween)
+                    val user = UserEventEntity(
+                        etName,
+                        picturePath ?: "null",
+                        arrayDate[0],
+                        arrayDate[1],
+                        arrayDate[2],
+                        yearsBetween
+                    )
 
                     scope.launch {
                         LoadSaveData(listUsers).setSaveUser(user)
@@ -230,42 +237,41 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
     }
 
     private fun openGalleryForImage() {
-        val intent = Intent(Intent.ACTION_PICK)
+        val intent = Intent()
         intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+
         // TODO FIX deprecated
         startActivityForResult(intent, REQUEST_CODE)
     }
 
     // TODO FIX deprecated
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
-            if (data != null) {
-                binding.imageViewNewImage.setImageURI(data.data) // handle chosen image
-                picturePath = getRealPathFromURI(data.data!!, requireContext() as Activity)
-            } else {
-                binding.imageViewNewImage.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.unnamed))
-            }
+            binding.imageViewNewImage.setImageURI(data!!.data)
+
         }
     }
 
-    private fun getRealPathFromURI(contentURI: Uri, context: Activity): String {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = context.managedQuery(
-            contentURI, projection, null,
-            null, null
-        ) ?: return null.toString()
-        val columnIndex = cursor
-            .getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-        return if (cursor.moveToFirst()) {
-            cursor.getString(columnIndex)
-        } else null.toString()
-    }
 
     private fun clickSortListUsers() {
         // Sort user on Alphabetically
         binding.textViewButtonSortWithAlphabeticallyForHomeScreen.setOnClickListener {
-            displayList(listUsers.value!!.sortedBy { it.name })
+            statusSort = when (statusSort) {
+                StatusSort.ALPHABETICALLY -> {
+                    StatusSort.DATE_DOWN
+                }
+                StatusSort.DATE_DOWN -> {
+                    StatusSort.DATE_UP
+                }
+                StatusSort.DATE_UP -> {
+                    StatusSort.ALPHABETICALLY
+                }
+            }
+
+            displayList(StatusSort.sortList(statusSort, listUsers.value!!))
         }
     }
 
