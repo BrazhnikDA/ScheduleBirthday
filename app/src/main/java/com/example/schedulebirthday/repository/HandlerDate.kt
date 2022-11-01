@@ -11,7 +11,6 @@ fun parseLocalDateOrNull(text: String, formatter: DateTimeFormatter): Boolean {
         LocalDate.parse(text, formatter)
         true
     } catch (ex: DateTimeParseException) {
-        //context?.displayToast("Дата неверна!")
         false
     }
 }
