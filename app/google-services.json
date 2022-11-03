@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "342022285284",
+    "project_id": "schedule-birthday",
+    "storage_bucket": "schedule-birthday.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:342022285284:android:43c7ac3534c7f9770089f1",
+        "android_client_info": {
+          "package_name": "com.example.schedulebirthday"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "342022285284-k9bu5jloai5gmdm06tc8tbms938d40vq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLpX--ku--PvNhLUkhWKPJ9tRL1h-MKjk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "342022285284-k9bu5jloai5gmdm06tc8tbms938d40vq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

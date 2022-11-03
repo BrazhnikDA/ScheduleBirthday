@@ -1,12 +1,17 @@
 package com.example.schedulebirthday.view
 
+import android.R.attr
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.icu.util.LocaleData
+import android.net.Uri
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -18,11 +23,18 @@ import com.example.schedulebirthday.model.UserModel
 import com.example.schedulebirthday.repository.*
 import com.example.schedulebirthday.utilities.displayToast
 import com.example.schedulebirthday.view.settings.SettingsActivity
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.fragment_list_users_birthday.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
@@ -31,7 +43,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
     private var statusSort: StatusSort = StatusSort.DATE_UP
 
     // Path to image
-    private var picturePath = "null"
+    private lateinit var picturePath: String
 
     private var _binding: FragmentListUsersBirthdayBinding? = null
     private val binding get() = _binding!!
@@ -251,7 +263,32 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
             binding.imageViewNewImage.setImageURI(data!!.data)
+            uploadImageToFirebase(data.data!!)
+        }
+    }
 
+    private fun uploadImageToFirebase(fileUri: Uri) {
+        if (fileUri != null) {
+            val fileName = UUID.randomUUID().toString() +".png"
+
+            val refStorage = FirebaseStorage
+                .getInstance()
+                .getReferenceFromUrl("gs://schedule-birthday.appspot.com")
+                .child(fileName)
+
+            refStorage.putFile(fileUri)
+                .addOnSuccessListener(
+                    OnSuccessListener<UploadTask.TaskSnapshot> { taskSnapshot ->
+                        taskSnapshot.storage.downloadUrl.addOnSuccessListener {
+                            val imageUrl = it.toString()
+                            picturePath = imageUrl
+                        }
+                    })
+
+                ?.addOnFailureListener(OnFailureListener { e ->
+                    print(e.message)
+                    picturePath = "null"
+                })
         }
     }
 
