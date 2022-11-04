@@ -1,7 +1,4 @@
-package com.example.schedulebirthday.repository
-
-import android.provider.Settings.Global.getString
-import com.example.schedulebirthday.R
+package com.example.schedulebirthday.utilities
 
 // Format Date
 // symbol(example): . / - _
