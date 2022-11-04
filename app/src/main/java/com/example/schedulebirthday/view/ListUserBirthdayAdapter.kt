@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.schedulebirthday.R
 import com.example.schedulebirthday.model.UserModel
 import com.example.schedulebirthday.model.UserModel.Companion.calculateRemainingDaysToBirthday
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.makeramen.roundedimageview.RoundedImageView
+import com.squareup.picasso.Picasso
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -24,7 +27,7 @@ class ListUserBirthdayAdapter(
     private val cellClickListener: ItemClickListener
 ) : RecyclerView.Adapter<ListUserBirthdayAdapter.RatingViewHolder>() {
 
-    class RatingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    class RatingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.textViewUser)
         val picture: RoundedImageView = itemView.findViewById(R.id.imageViewUser)
     }
@@ -37,22 +40,17 @@ class ListUserBirthdayAdapter(
     }
 
     override fun onBindViewHolder(holder: RatingViewHolder, position: Int) {
-        val period = calculateRemainingDaysToBirthday(listUser[position].day, listUser[position].months)
+        val period =
+            calculateRemainingDaysToBirthday(listUser[position].day, listUser[position].months)
 
         holder.name.text = listUser[position].name + "\n" + period + " дней"
 
-       // val imgFile = File(listUser[position].picture)
-       // val bitmap: Bitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-
-       // holder.picture.setImageURI(Uri.parse(listUser[position].picture))
-       // holder.picture.setImageBitmap(bitmap)
+        Picasso.get().load(listUser[position].picture).into(holder.picture);
 
         holder.itemView.setOnClickListener {
             cellClickListener.onCellClickListener(listUser[position].id.toLong())
         }
-        /*holder.itemView.setOnLongClickListener {
-            cellClickListener.onCellLongClickListener(listUser[position].id)
-        }*/
+
     }
 
     override fun getItemCount(): Int {
