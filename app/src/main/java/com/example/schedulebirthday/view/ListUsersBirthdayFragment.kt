@@ -35,7 +35,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
     private var statusSort: StatusSort = StatusSort.DATE_UP
 
     // Path to image
-    private lateinit var pictureUriTemp: Uri
+    private var pictureUriTemp: Uri? = null
 
     private var _binding: FragmentListUsersBirthdayBinding? = null
     private val binding get() = _binding!!
@@ -97,7 +97,10 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             ).toString()
         )
 
-        Picasso.get().load(listUsers.value!![reallyID].picture).into(binding.imageViewShowProfile)
+        if (listUsers.value!![reallyID].picture != "null")
+            Picasso.get().load(listUsers.value!![reallyID].picture)
+                .into(binding.imageViewShowProfile)
+        else binding.imageViewShowProfile.setImageResource(R.drawable.unnamed)
 
         binding.imageViewButtonCloseProfile.setOnClickListener {
             binding.profileBackground.visibility = View.GONE
@@ -218,16 +221,11 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             else {
                 if (pictureUriTemp != null) {
                     // Add user WITH IMAGE
-                    uploadImageToFirebase(pictureUriTemp)
+                    uploadImageToFirebase(pictureUriTemp!!)
                 } else {
                     // Add user NOT IMAGE
                     saveNewProfile("null")
                 }
-                binding.newBackground.visibility = View.GONE
-                binding.wrapperAddNewImage.visibility = View.GONE
-                binding.editTextName.setText("")
-                binding.editTextDate.setText("")
-                binding.imageViewShowProfile.setImageDrawable(requireContext().getDrawable(R.drawable.unnamed))
             }
         }
         binding.imageViewNewImage.setOnClickListener {
@@ -297,25 +295,35 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             scope.launch {
                 LoadSaveData(listUsers).setSaveUser(user)
             }
-
+            // Clear
+            clearInputFieldAddNewProfile()
             // Update RecyclerView
             loadSaveUsers()
         }
     }
 
+    private fun clearInputFieldAddNewProfile() {
+        binding.newBackground.visibility = View.GONE
+        binding.wrapperAddNewImage.visibility = View.GONE
+        binding.editTextName.setText("")
+        binding.editTextDate.setText("")
+        binding.imageViewNewImage.setImageResource(R.drawable.unnamed)
+    }
 
     private fun clickSortListUsers() {
         // Sort user on Alphabetically
         binding.textViewButtonSortWithAlphabeticallyForHomeScreen.setOnClickListener {
-            statusSort = when (statusSort) {
-                StatusSort.ALPHABETICALLY -> {
-                    StatusSort.DATE_DOWN
-                }
-                StatusSort.DATE_DOWN -> {
-                    StatusSort.DATE_UP
-                }
-                StatusSort.DATE_UP -> {
-                    StatusSort.ALPHABETICALLY
+            if (listUsers.value?.isNotEmpty() == true) {
+                statusSort = when (statusSort) {
+                    StatusSort.ALPHABETICALLY -> {
+                        StatusSort.DATE_DOWN
+                    }
+                    StatusSort.DATE_DOWN -> {
+                        StatusSort.DATE_UP
+                    }
+                    StatusSort.DATE_UP -> {
+                        StatusSort.ALPHABETICALLY
+                    }
                 }
             }
 

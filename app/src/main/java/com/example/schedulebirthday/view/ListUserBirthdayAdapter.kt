@@ -45,12 +45,13 @@ class ListUserBirthdayAdapter(
 
         holder.name.text = listUser[position].name + "\n" + period + " дней"
 
-        Picasso.get().load(listUser[position].picture).into(holder.picture);
+        if(listUser[position].picture != "null")
+            Picasso.get().load(listUser[position].picture).into(holder.picture);
+        else holder.picture.setImageResource(R.drawable.unnamed)
 
         holder.itemView.setOnClickListener {
             cellClickListener.onCellClickListener(listUser[position].id.toLong())
         }
-
     }
 
     override fun getItemCount(): Int {
