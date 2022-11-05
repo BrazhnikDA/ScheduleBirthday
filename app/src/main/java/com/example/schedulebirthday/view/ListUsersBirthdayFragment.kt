@@ -1,9 +1,15 @@
 package com.example.schedulebirthday.view
 
 import android.app.Activity
+import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +31,7 @@ import kotlinx.android.synthetic.main.fragment_list_users_birthday.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -56,6 +63,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
         recyclerView = view.findViewById(R.id.recyclerView)!!
         recyclerView.layoutManager = GridLayoutManager(context, 2)
+        recyclerView.setHasFixedSize(true)
 
         handlerClick()
         handlerInput()
@@ -99,6 +107,8 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
 
         if (listUsers.value!![reallyID].picture != "null")
             Picasso.get().load(listUsers.value!![reallyID].picture)
+                .fit().centerCrop()
+                .error(R.drawable.unnamed)
                 .into(binding.imageViewShowProfile)
         else binding.imageViewShowProfile.setImageResource(R.drawable.unnamed)
 
@@ -253,15 +263,20 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
     }
 
     private fun uploadImageToFirebase(fileUri: Uri) {
-        val fileName = UUID.randomUUID().toString() + ".png"
+        val fileName = UUID.randomUUID().toString() + ".jpg"
 
         val refStorage = FirebaseStorage
             .getInstance()
             .getReferenceFromUrl("gs://schedule-birthday.appspot.com")
             .child(fileName)
 
+        var imageBitmap: Bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, fileUri)
+        imageBitmap = rotateImageIfRequired(requireContext(), imageBitmap, fileUri)
+        val baos = ByteArrayOutputStream()
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos)
+        val data: ByteArray = baos.toByteArray()
 
-        refStorage.putFile(fileUri)
+        refStorage.putBytes(data)
             .addOnSuccessListener { taskSnapshot ->
                 taskSnapshot.storage.downloadUrl.addOnSuccessListener {
                     saveNewProfile(it.toString())
@@ -273,6 +288,46 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
                 saveNewProfile("null")
                 context?.displayToast("Превышен лимит изображений, приходите через сутки :(")
             }
+    }
+
+    private  fun rotateImageIfRequired(context: Context, img:Bitmap, selectedImage:Uri):Bitmap {
+
+        // Detect rotation
+        var rotation = getRotation( context, selectedImage)
+        if (rotation != 0) {
+            var matrix:Matrix =  Matrix()
+            matrix.postRotate(rotation as Float)
+            var  rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true)
+            img.recycle()
+            return rotatedImg
+        }
+        else{
+            return img
+        }
+    }
+
+    private fun getRotation(context:Context, imageSelected: Uri):Int{
+        var rotation = 0
+        val content: ContentResolver = context.contentResolver
+        val arr:Array<String> = arrayOf("orientation","date_added")
+
+        val mediaCursor: Cursor = content.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,  arr,
+            null, null, "date_added desc")!!
+        if (mediaCursor.count != 0) {
+            while(mediaCursor.moveToNext()){
+                rotation = mediaCursor.getInt(0)
+                break
+            }
+        }
+        mediaCursor.close()
+        return rotation
+
+    }
+
+    private fun rotateBitmap(source: Bitmap, angle: Float): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(angle)
+        return Bitmap.createBitmap(source, 0, 0, source.width, source.height, matrix, true)
     }
 
     private fun saveNewProfile(path: String) {

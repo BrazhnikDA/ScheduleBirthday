@@ -46,7 +46,10 @@ class ListUserBirthdayAdapter(
         holder.name.text = listUser[position].name + "\n" + period + " дней"
 
         if(listUser[position].picture != "null")
-            Picasso.get().load(listUser[position].picture).into(holder.picture);
+            Picasso.get().load(listUser[position].picture)
+                .fit().centerCrop()
+                .error(R.drawable.unnamed)
+                .into(holder.picture);
         else holder.picture.setImageResource(R.drawable.unnamed)
 
         holder.itemView.setOnClickListener {
