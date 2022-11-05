@@ -55,13 +55,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <TextView
+        <ImageView
             android:id="@+id/textViewButtonSortWithAlphabeticallyForHomeScreen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_margin="15dp"
             android:fontFamily="@font/renkiest_regular"
-            android:text="@string/sort_alphabetically_a"
+            android:src="@drawable/alhabetically"
             android:textColor="@color/black"
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -270,7 +270,8 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             .getReferenceFromUrl("gs://schedule-birthday.appspot.com")
             .child(fileName)
 
-        var imageBitmap: Bitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, fileUri)
+        var imageBitmap: Bitmap =
+            MediaStore.Images.Media.getBitmap(requireContext().contentResolver, fileUri)
         imageBitmap = rotateImageIfRequired(requireContext(), imageBitmap, fileUri)
         val baos = ByteArrayOutputStream()
         imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos)
@@ -290,31 +291,33 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             }
     }
 
-    private  fun rotateImageIfRequired(context: Context, img:Bitmap, selectedImage:Uri):Bitmap {
+    private fun rotateImageIfRequired(context: Context, img: Bitmap, selectedImage: Uri): Bitmap {
 
         // Detect rotation
-        var rotation = getRotation( context, selectedImage)
+        var rotation = getRotation(context, selectedImage)
         if (rotation != 0) {
-            var matrix:Matrix =  Matrix()
+            var matrix: Matrix = Matrix()
             matrix.postRotate(rotation as Float)
-            var  rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true)
+            var rotatedImg =
+                Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true)
             img.recycle()
             return rotatedImg
-        }
-        else{
+        } else {
             return img
         }
     }
 
-    private fun getRotation(context:Context, imageSelected: Uri):Int{
+    private fun getRotation(context: Context, imageSelected: Uri): Int {
         var rotation = 0
         val content: ContentResolver = context.contentResolver
-        val arr:Array<String> = arrayOf("orientation","date_added")
+        val arr: Array<String> = arrayOf("orientation", "date_added")
 
-        val mediaCursor: Cursor = content.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,  arr,
-            null, null, "date_added desc")!!
+        val mediaCursor: Cursor = content.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arr,
+            null, null, "date_added desc"
+        )!!
         if (mediaCursor.count != 0) {
-            while(mediaCursor.moveToNext()){
+            while (mediaCursor.moveToNext()) {
                 rotation = mediaCursor.getInt(0)
                 break
             }
@@ -371,12 +374,18 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             if (listUsers.value?.isNotEmpty() == true) {
                 statusSort = when (statusSort) {
                     StatusSort.ALPHABETICALLY -> {
+                        binding.textViewButtonSortWithAlphabeticallyForHomeScreen
+                            .setImageResource(R.drawable.calendar_down)
                         StatusSort.DATE_DOWN
                     }
                     StatusSort.DATE_DOWN -> {
+                        binding.textViewButtonSortWithAlphabeticallyForHomeScreen
+                            .setImageResource(R.drawable.calendar_up)
                         StatusSort.DATE_UP
                     }
                     StatusSort.DATE_UP -> {
+                        binding.textViewButtonSortWithAlphabeticallyForHomeScreen
+                            .setImageResource(R.drawable.alhabetically)
                         StatusSort.ALPHABETICALLY
                     }
                 }
