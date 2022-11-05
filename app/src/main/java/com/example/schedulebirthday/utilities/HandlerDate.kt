@@ -1,4 +1,4 @@
-package com.example.schedulebirthday.repository
+package com.example.schedulebirthday.utilities
 
 import com.example.schedulebirthday.utilities.displayToast
 import java.time.LocalDate

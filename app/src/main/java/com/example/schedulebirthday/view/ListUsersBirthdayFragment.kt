@@ -17,11 +17,10 @@ import com.example.schedulebirthday.database.room.entity.UserEventEntity
 import com.example.schedulebirthday.databinding.FragmentListUsersBirthdayBinding
 import com.example.schedulebirthday.model.UserModel
 import com.example.schedulebirthday.repository.*
-import com.example.schedulebirthday.utilities.convertStringEditTextToArrayStringDate
-import com.example.schedulebirthday.utilities.convertStringEditTextToStringDate
-import com.example.schedulebirthday.utilities.displayToast
+import com.example.schedulebirthday.utilities.*
 import com.example.schedulebirthday.view.settings.SettingsActivity
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_list_users_birthday.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +35,7 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
     private var statusSort: StatusSort = StatusSort.DATE_UP
 
     // Path to image
-    private lateinit var picturePath: String
+    private lateinit var pictureUriTemp: Uri
 
     private var _binding: FragmentListUsersBirthdayBinding? = null
     private val binding get() = _binding!!
@@ -98,9 +97,19 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
             ).toString()
         )
 
-        binding.showProfileWrapper.setOnClickListener {
+        Picasso.get().load(listUsers.value!![reallyID].picture).into(binding.imageViewShowProfile)
+
+        binding.imageViewButtonCloseProfile.setOnClickListener {
             binding.profileBackground.visibility = View.GONE
             binding.showProfileWrapper.visibility = View.GONE
+        }
+
+        binding.imageViewButtonEditProfile.setOnClickListener {
+            context?.displayToast("В разработке!")
+        }
+
+        binding.showProfileWrapper.setOnClickListener {
+            // Nothing
         }
     }
 
@@ -201,39 +210,24 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         }
         // Handler click add new User
         binding.buttonAddNew.setOnClickListener {
-            val etName = binding.editTextName.text.toString()
+            var etName = binding.editTextName.text.toString()
             val etDate = binding.editTextDate.text.toString()
             // Check field
-            if (etName.isEmpty() || etDate.isEmpty()
-            ) context?.displayToast("Заполните поля")
+            if (etName.isEmpty() || etDate.isEmpty())
+                context?.displayToast("Заполните поля")
             else {
-                val date = convertStringEditTextToStringDate(etDate, '.')
-                val arrayDate = convertStringEditTextToArrayStringDate(etDate, '.')
-
-                if (parseLocalDateOrNull(date, DateTimeFormatter.ofPattern("ddMMyyyy"))) {
-                    val yearsBetween = calculateYear(date).toString()
-                    val user = UserEventEntity(
-                        etName,
-                        picturePath ?: "null",
-                        arrayDate[0],
-                        arrayDate[1],
-                        arrayDate[2],
-                        yearsBetween
-                    )
-
-                    scope.launch {
-                        LoadSaveData(listUsers).setSaveUser(user)
-                    }
-
-                    binding.newBackground.visibility = View.GONE
-                    binding.wrapperAddNewImage.visibility = View.GONE
-                    context?.displayToast("Успех!")
-
-                    // Update RecyclerView
-                    loadSaveUsers()
+                if (pictureUriTemp != null) {
+                    // Add user WITH IMAGE
+                    uploadImageToFirebase(pictureUriTemp)
                 } else {
-                    context?.displayToast("Дата указана неверно!")
+                    // Add user NOT IMAGE
+                    saveNewProfile("null")
                 }
+                binding.newBackground.visibility = View.GONE
+                binding.wrapperAddNewImage.visibility = View.GONE
+                binding.editTextName.setText("")
+                binding.editTextDate.setText("")
+                binding.imageViewShowProfile.setImageDrawable(requireContext().getDrawable(R.drawable.unnamed))
             }
         }
         binding.imageViewNewImage.setOnClickListener {
@@ -256,31 +250,56 @@ class ListUsersBirthdayFragment : Fragment(), ItemClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
             binding.imageViewNewImage.setImageURI(data!!.data)
-            uploadImageToFirebase(data.data!!)
+            pictureUriTemp = data.data!!
         }
     }
 
     private fun uploadImageToFirebase(fileUri: Uri) {
-        if (fileUri != null) {
-            val fileName = UUID.randomUUID().toString() +".png"
+        val fileName = UUID.randomUUID().toString() + ".png"
 
-            val refStorage = FirebaseStorage
-                .getInstance()
-                .getReferenceFromUrl("gs://schedule-birthday.appspot.com")
-                .child(fileName)
+        val refStorage = FirebaseStorage
+            .getInstance()
+            .getReferenceFromUrl("gs://schedule-birthday.appspot.com")
+            .child(fileName)
 
-            refStorage.putFile(fileUri)
-                .addOnSuccessListener { taskSnapshot ->
-                    taskSnapshot.storage.downloadUrl.addOnSuccessListener {
-                        val imageUrl = it.toString()
-                        picturePath = imageUrl
-                    }
+
+        refStorage.putFile(fileUri)
+            .addOnSuccessListener { taskSnapshot ->
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener {
+                    saveNewProfile(it.toString())
                 }
+            }
 
-                .addOnFailureListener { e ->
-                    print(e.message)
-                    picturePath = "null"
-                }
+            .addOnFailureListener { e ->
+                print(e.message)
+                saveNewProfile("null")
+                context?.displayToast("Превышен лимит изображений, приходите через сутки :(")
+            }
+    }
+
+    private fun saveNewProfile(path: String) {
+        val etName = binding.editTextName.text.toString()
+        val etDate = binding.editTextDate.text.toString()
+        val date = convertStringEditTextToStringDate(etDate, '.')
+        val arrayDate = convertStringEditTextToArrayStringDate(etDate, '.')
+
+        if (parseLocalDateOrNull(date, DateTimeFormatter.ofPattern("ddMMyyyy"))) {
+            val yearsBetween = calculateYear(date).toString()
+            val user = UserEventEntity(
+                etName,
+                path,
+                arrayDate[0],
+                arrayDate[1],
+                arrayDate[2],
+                yearsBetween
+            )
+
+            scope.launch {
+                LoadSaveData(listUsers).setSaveUser(user)
+            }
+
+            // Update RecyclerView
+            loadSaveUsers()
         }
     }
 

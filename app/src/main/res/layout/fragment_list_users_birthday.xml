@@ -23,19 +23,19 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="15dp"
+            android:contentDescription="@string/contentDescription_menu"
             android:src="@drawable/menu"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/contentDescription_menu" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textViewButtonOpenHomeScreenMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/renkiest_regular"
-            android:text="@string/go_to_home_screen_button"
             android:gravity="center"
+            android:text="@string/go_to_home_screen_button"
             android:textColor="@color/black"
             android:textSize="36sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -47,8 +47,8 @@
             android:id="@+id/textViewButtonAddNewBirthday"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:gravity="center"
             android:background="@drawable/add"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/textViewButtonSortWithAlphabeticallyForHomeScreen"
             app:layout_constraintStart_toEndOf="@+id/textViewButtonOpenHomeScreenMenu"
@@ -106,11 +106,11 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="15dp"
+            android:contentDescription="@string/contentDescription_menu"
             android:src="@drawable/menu"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/contentDescription_menu" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <RelativeLayout
@@ -129,9 +129,9 @@
             android:layout_centerInParent="true"
             android:layout_marginBottom="10dp"
             android:background="@color/gray_top_menu_background"
+            android:fontFamily="@font/renkiest_regular"
             android:gravity="center"
             android:text="@string/settings"
-            android:fontFamily="@font/renkiest_regular"
             android:textColor="@color/black"
             android:textSize="40sp" />
 
@@ -141,9 +141,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@color/gray_top_menu_background"
+            android:fontFamily="@font/renkiest_regular"
             android:gravity="center"
             android:text="@string/feedback"
-            android:fontFamily="@font/renkiest_regular"
             android:textColor="@color/black"
             android:textSize="40sp" />
 
@@ -154,9 +154,9 @@
             android:layout_below="@+id/textViewButtonReviews"
             android:layout_marginTop="10dp"
             android:background="@color/gray_top_menu_background"
+            android:fontFamily="@font/renkiest_regular"
             android:gravity="center"
             android:text="@string/call_friend"
-            android:fontFamily="@font/renkiest_regular"
             android:textColor="@color/black"
             android:textSize="40sp" />
 
@@ -192,32 +192,33 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="100dp"
                 android:elevation="100dp"
-                app:cardCornerRadius="150dp">
+                app:cardCornerRadius="320dp">
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/imageViewShowProfile"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
+                    android:layout_width="350dp"
+                    android:layout_height="350dp"
                     android:background="@color/white"
                     android:scaleType="centerCrop"
                     android:src="@drawable/unnamed"
-                    app:riv_corner_radius="100dp" />
-
-                <TextView
-                    android:id="@+id/textViewUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@color/white"
-                    android:gravity="center"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:text="@string/example_name"
-                    android:fontFamily="@font/renkiest_regular"
-                    android:textColor="@color/black"
-                    android:textSize="32sp" />
+                    app:riv_corner_radius="320dp" />
 
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/textViewUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:fontFamily="@font/renkiest_regular"
+                android:gravity="center"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/example_name"
+                android:textColor="@color/black"
+                android:textSize="32sp" />
 
         </LinearLayout>
 
@@ -226,13 +227,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/wrapperImageText"
-            android:layout_marginTop="75dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:autoSizeMaxTextSize="36sp"
+            android:autoSizeMinTextSize="26sp"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:background="@color/white"
-            android:gravity="center"
-            android:text="@string/example_21_11_1981_45"
             android:fontFamily="@font/renkiest_regular"
+            android:gravity="center"
+            android:text="@string/show_detail_profile_age"
             android:textColor="@color/black"
-            android:textSize="44sp" />
+            android:textSize="36sp" />
+
+        <ImageView
+            android:id="@+id/imageViewButtonCloseProfile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/close" />
+
+        <ImageView
+            android:id="@+id/imageViewButtonEditProfile"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/edit" />
 
     </RelativeLayout>
     <!--CLOSE SHOW PROFILE-->
@@ -247,70 +275,70 @@
         android:orientation="vertical"
         android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/wrapperAddNewImage"
+    <LinearLayout
+        android:id="@+id/wrapperAddNewImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:elevation="100dp"
+            app:cardCornerRadius="150dp">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/imageViewNewImage"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@color/white"
+                android:scaleType="centerCrop"
+                android:src="@drawable/unnamed"
+                app:riv_corner_radius="100dp" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:layout_marginTop="25dp"
+            android:fontFamily="@font/renkiest_regular"
+            android:gravity="center"
+            android:hint="@string/hint_name"
+            android:inputType="text"
+            android:maxLength="20"
+            android:textSize="42sp"
+            android:textStyle="bold" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="100dp"
-                android:elevation="100dp"
-                app:cardCornerRadius="150dp">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/editTextDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:fontFamily="@font/renkiest_regular"
+            android:gravity="center"
+            android:hint="@string/example_07_11_2001"
+            android:inputType="date"
+            android:maxLength="10"
+            android:textColorHint="@color/gray_text_hint"
+            android:textSize="42sp"
+            android:textStyle="bold" />
 
-                <com.makeramen.roundedimageview.RoundedImageView
-                    android:id="@+id/imageViewNewImage"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:background="@color/white"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/unnamed"
-                    app:riv_corner_radius="100dp" />
+        <Button
+            android:id="@+id/buttonAddNew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="25dp"
+            android:background="@android:color/holo_green_light"
+            android:fontFamily="@font/renkiest_regular"
+            android:text="@string/add" />
 
-            </androidx.cardview.widget.CardView>
-
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/editTextName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:fontFamily="@font/renkiest_regular"
-                android:gravity="center"
-                android:hint="@string/hint_name"
-                android:inputType="text"
-                android:maxLength="20"
-                android:textSize="42sp"
-                android:textStyle="bold" />
-
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/editTextDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:fontFamily="@font/renkiest_regular"
-                android:gravity="center"
-                android:hint="@string/example_07_11_2001"
-                android:inputType="date"
-                android:maxLength="10"
-                android:textColorHint="@color/gray_text_hint"
-                android:textSize="42sp"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/buttonAddNew"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="25dp"
-                android:background="@android:color/holo_green_light"
-                android:fontFamily="@font/renkiest_regular"
-                android:text="@string/add" />
-
-        </LinearLayout>
+    </LinearLayout>
 
     <!-- CLOSE ADD NEW USER-->
 
